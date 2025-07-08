@@ -39,7 +39,7 @@ The library follows a modular design with clear separation of concerns:
 
 ```
 src/
-├── graph.h/.cc                    # Core UnidirectionalGraph data structure
+├── graph.h/.cc                   # Core UnidirectionalGraph data structure
 ├── graph_utils.h/.cc             # Graph utility functions
 ├── graph_connectivity.h/.cc      # Connectivity analysis algorithms
 ├── spanning_tree.h/.cc           # Spanning tree and forest algorithms

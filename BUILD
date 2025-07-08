@@ -8,12 +8,21 @@ cc_library(
     srcs = [
         "src/graph.cc",
         "src/graph_utils.cc",
+        "src/graph_connectivity.cc",
         "src/spanning_tree.cc",
+        "src/hamiltonian.cc",
+        "src/tsp_boost.cc",
     ],
     hdrs = [
         "src/graph.h",
         "src/graph_utils.h",
+        "src/graph_connectivity.h",
         "src/spanning_tree.h",
+        "src/hamiltonian.h",
+        "src/tsp_boost.h",
+    ],
+    deps = [
+        "@boost.graph",
     ],
     strip_include_prefix = "src",
 )

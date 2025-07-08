@@ -1,0 +1,5 @@
+/.vscode
+/bazel-Collectives
+/bazel-bin
+/bazel-out
+/bazel-testlogs

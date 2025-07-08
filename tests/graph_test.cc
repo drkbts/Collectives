@@ -112,6 +112,35 @@ TEST_F(UnidirectionalGraphTest, GetNeighborsThrows) {
   EXPECT_NO_THROW(g.getNeighbors(1));
 }
 
+// Test getting all vertices
+TEST_F(UnidirectionalGraphTest, GetVertices) {
+  // Empty graph
+  std::vector<int> vertices = g.getVertices();
+  EXPECT_TRUE(vertices.empty());
+
+  // Add vertices
+  g.addVertex(1);
+  g.addVertex(3);
+  g.addVertex(2);
+  
+  vertices = g.getVertices();
+  EXPECT_EQ(vertices.size(), 3);
+  
+  // Sort for consistent comparison
+  std::sort(vertices.begin(), vertices.end());
+  std::vector<int> expected = {1, 2, 3};
+  EXPECT_EQ(vertices, expected);
+
+  // Add vertex via edge
+  g.addEdge(1, 5);
+  vertices = g.getVertices();
+  EXPECT_EQ(vertices.size(), 4);
+  
+  std::sort(vertices.begin(), vertices.end());
+  expected = {1, 2, 3, 5};
+  EXPECT_EQ(vertices, expected);
+}
+
 // Test vertex and edge counts during various operations
 TEST_F(UnidirectionalGraphTest, Counts) {
   EXPECT_EQ(g.getVertexCount(), 0);

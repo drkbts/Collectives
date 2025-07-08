@@ -47,6 +47,12 @@ class UnidirectionalGraph {
    */
   std::vector<int> getNeighbors(int v) const;
 
+  /**
+   * @brief Gets all vertices in the graph.
+   * @return A vector containing all vertices in the graph.
+   */
+  std::vector<int> getVertices() const;
+
   void printGraph() const;
 
  private:

@@ -54,6 +54,17 @@ std::vector<int> UnidirectionalGraph::getNeighbors(int v) const {
   }
 }
 
+std::vector<int> UnidirectionalGraph::getVertices() const {
+  std::vector<int> vertices;
+  vertices.reserve(adjList_.size());
+  
+  for (const auto& pair : adjList_) {
+    vertices.push_back(pair.first);
+  }
+  
+  return vertices;
+}
+
 void UnidirectionalGraph::printGraph() const {
   for (const auto& pair : adjList_) {
     std::cout << pair.first << " -> { ";

@@ -8,10 +8,12 @@ cc_library(
     srcs = [
         "src/graph.cc",
         "src/graph_utils.cc",
+        "src/spanning_tree.cc",
     ],
     hdrs = [
         "src/graph.h",
         "src/graph_utils.h",
+        "src/spanning_tree.h",
     ],
     strip_include_prefix = "src",
 )
@@ -30,6 +32,16 @@ cc_test(
 cc_test(
     name = "graph_utils_test",
     srcs = ["tests/graph_utils_test.cc"],
+    deps = [
+        ":graph",
+        "@googletest//:gtest_main",
+    ],
+)
+
+# Test executable for spanning tree
+cc_test(
+    name = "spanning_tree_test",
+    srcs = ["tests/spanning_tree_test.cc"],
     deps = [
         ":graph",
         "@googletest//:gtest_main",

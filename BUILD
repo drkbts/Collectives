@@ -12,6 +12,8 @@ cc_library(
         "src/spanning_tree.cc",
         "src/hamiltonian.cc",
         "src/tsp_boost.cc",
+        "src/graph_partitioning.cc",
+        "src/graph_collective.cc",
     ],
     hdrs = [
         "src/graph.h",
@@ -20,6 +22,8 @@ cc_library(
         "src/spanning_tree.h",
         "src/hamiltonian.h",
         "src/tsp_boost.h",
+        "src/graph_partitioning.h",
+        "src/graph_collective.h",
     ],
     deps = [
         "@boost.graph",
@@ -51,6 +55,26 @@ cc_test(
 cc_test(
     name = "spanning_tree_test",
     srcs = ["tests/spanning_tree_test.cc"],
+    deps = [
+        ":graph",
+        "@googletest//:gtest_main",
+    ],
+)
+
+# Test executable for graph partitioning
+cc_test(
+    name = "graph_partitioning_test",
+    srcs = ["tests/graph_partitioning_test.cc"],
+    deps = [
+        ":graph",
+        "@googletest//:gtest_main",
+    ],
+)
+
+# Test executable for graph collective operations
+cc_test(
+    name = "graph_collective_test",
+    srcs = ["tests/graph_collective_test.cc"],
     deps = [
         ":graph",
         "@googletest//:gtest_main",

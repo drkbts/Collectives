@@ -33,6 +33,12 @@ This library provides a modular collection of graph algorithms built around a `U
 - **Minimum Spanning Trees**: Kruskal's and Prim's algorithms
 - **Weighted graph support** with customizable edge weights
 
+### 🔀 **Graph Partitioning**
+- **Bisectional Bandwidth**: Exact computation for small graphs (≤20 vertices)
+- **Balanced Partitioning**: Finds optimal graph cuts into equal halves
+- **Multiple Algorithms**: Brute force exact method with approximation methods planned
+- **Known Topology Support**: Optimized solutions for complete graphs and trees
+
 ## Architecture
 
 The library follows a modular design with clear separation of concerns:
@@ -44,7 +50,9 @@ src/
 ├── graph_connectivity.h/.cc      # Connectivity analysis algorithms
 ├── spanning_tree.h/.cc           # Spanning tree and forest algorithms
 ├── hamiltonian.h/.cc             # Hamiltonian cycle algorithms
-└── tsp_boost.h/.cc               # TSP algorithms & Boost integration
+├── tsp_boost.h/.cc               # TSP algorithms & Boost integration
+├── graph_partitioning.h/.cc      # Graph partitioning & bisectional bandwidth
+└── graph_collective.h/.cc        # Collective operations & all-reduce algorithms
 ```
 
 ### Module Responsibilities
@@ -56,6 +64,7 @@ src/
 | **Spanning Tree** | Tree algorithms | `computeSpanningTree()`, `computeSpanningForest()` |
 | **Hamiltonian** | Cycle algorithms | `findExactHamiltonianCycle()`, `findApproximateHamiltonianCycle()` |
 | **TSP Boost** | Optimization | `computeMSTKruskal()`, `computeMSTPrim()` |
+| **Graph Partitioning** | Bisectional bandwidth | `computeBisectionalBandwidth()`, `findBisectionalPartition()` |
 
 ## Usage Examples
 
@@ -110,6 +119,62 @@ std::vector<std::vector<double>> weights = {{0, 1, 2}, {1, 0, 1}, {2, 1, 0}};
 std::vector<int> tsp_tour = TSPBoost::findApproximateHamiltonianCycle(graph, weights);
 ```
 
+### Graph Partitioning and Bisectional Bandwidth
+```cpp
+#include "graph_partitioning.h"
+
+// Compute bisectional bandwidth (automatic method selection)
+int bandwidth = GraphPartitioning::computeBisectionalBandwidth(graph);
+
+// Find the actual partition that achieves minimum bandwidth
+GraphPartitioning::GraphPartition partition = GraphPartitioning::findBisectionalPartition(graph);
+std::vector<int> partition1 = partition.partition1;
+std::vector<int> partition2 = partition.partition2;
+int cut_size = partition.bandwidth;
+
+// Exact computation for small graphs
+int exact_bandwidth = GraphPartitioning::computeExactBisectionalBandwidth(graph);
+
+// Known topology optimizations
+int tree_bandwidth = GraphPartitioning::computeKnownTopologyBandwidth(graph, 
+    GraphPartitioning::GraphTopology::TREE);
+```
+
+### Collective Operations and All-Reduce
+```cpp
+#include "graph_collective.h"
+
+// Basic all-reduce with automatic pattern selection
+std::map<int, int> initial_values = {{0, 1}, {1, 2}, {2, 3}, {3, 4}};
+GraphCollective::SumReduction<int> sum_op;
+
+auto result = GraphCollective::GraphCollective<int>::allReduce(graph, initial_values, sum_op);
+int final_value = result.final_value;  // Sum of all values
+int total_rounds = result.total_rounds;
+int total_messages = result.total_messages;
+
+// Tree-based all-reduce (good for general graphs)
+auto tree_result = GraphCollective::GraphCollective<int>::allReduceTree(graph, initial_values, sum_op);
+
+// Hypercube all-reduce (optimal for power-of-2 nodes)
+auto hypercube_result = GraphCollective::GraphCollective<int>::allReduceHypercube(graph, initial_values, sum_op);
+
+// Ring-based all-reduce (good for bandwidth-limited scenarios)
+auto ring_result = GraphCollective::GraphCollective<int>::allReduceRing(graph, initial_values, sum_op);
+
+// Different reduction operations
+GraphCollective::MaxReduction<int> max_op;
+GraphCollective::MinReduction<int> min_op;
+GraphCollective::AverageReduction<double> avg_op(4);
+
+auto max_result = GraphCollective::GraphCollective<int>::allReduce(graph, initial_values, max_op);
+auto min_result = GraphCollective::GraphCollective<int>::allReduce(graph, initial_values, min_op);
+
+// Custom communication patterns
+auto optimal_result = GraphCollective::GraphCollective<int>::allReduce(
+    graph, initial_values, sum_op, GraphCollective::CommunicationPattern::OPTIMAL);
+```
+
 ## Performance Characteristics
 
 | Algorithm | Time Complexity | Best Use Case |
@@ -119,6 +184,7 @@ std::vector<int> tsp_tour = TSPBoost::findApproximateHamiltonianCycle(graph, wei
 | **Exact Hamiltonian** | O(V!) | Small graphs (≤ 15 vertices) |
 | **Approximate Hamiltonian** | O(V²) | Larger graphs, approximation acceptable |
 | **MST (Kruskal/Prim)** | O(E log V) | Weighted graphs |
+| **Bisectional Bandwidth** | O(2^V) | Small graphs (≤ 20 vertices) |
 
 ## Build System
 
@@ -147,10 +213,11 @@ bazel test //...
 bazel test //:spanning_tree_test
 bazel test //:graph_test
 bazel test //:graph_utils_test
+bazel test //:graph_partitioning_test
 ```
 
 ### Test Coverage
-- **26 comprehensive tests** covering all algorithms
+- **107 comprehensive tests** covering all algorithms
 - **Edge case handling**: empty graphs, single vertices, disconnected components
 - **Performance validation**: algorithm correctness and efficiency
 - **Integration testing**: module interaction verification
